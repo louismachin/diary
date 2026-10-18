@@ -11,19 +11,23 @@ server_thread = Thread.new do
                 puts "\n[RECEIVED PACKET]:"
                 puts payload
 
-                # Catch a dynamic loop interruption if 'END_DIARY' is called
+                lines = payload.lines.map(&:chomp)
+                split_at = lines.index { |l| l.strip.empty? }
+
+                header = split_at ? lines[0...split_at]     : lines
+                body   = split_at ? lines[(split_at + 1)..] : []
+
+                context = ConnectionContext.new(client, body)
+
                 catch(:close_connection) do
-                    payload.each_line do |line|
-                        next if line.strip.empty?
+                    header.each do |line|
                         parts = line.strip.split(" ")
-                        verb, tail = parts[0].upcase, (parts[1..-1] || [])
+                        context.verb = parts[0].upcase
+                        context.tail = parts[1..] || []
 
-                        context = ConnectionContext.new(client, verb, tail)
-
-                        context.instance_eval do
-                            not_verb unless $diary_verbs.key?(verb)
-                            instance_eval(&$diary_verbs[verb])
-                        end
+                        context.not_verb unless $diary_verbs.key?(context.verb)
+                        context.instance_eval(&$diary_verbs[context.verb])
+                        puts "ACTION=#{context.action}; BODY=#{context.body}"
                     end
                 end
             rescue => e

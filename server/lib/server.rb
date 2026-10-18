@@ -2,7 +2,6 @@ require 'socket'
 
 $diary_verbs = {}
 
-
 diary_port_path = File.join(__dir__, '..', '.port')
 DIARY_PORT = File.read(diary_port_path) || 1734
 

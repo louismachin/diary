@@ -1,3 +1,12 @@
+# DIARY A=ENTRY
+define :diary do
+    for word in tail do
+        key, value = word.split('=')
+        self.action = value if key == 'A'
+    end
+    client.puts self.action
+end
+
 define :echo do
     client.puts tail.join(" ")
 end
@@ -6,12 +15,7 @@ define :ping do
     client.puts "PONG #{tail.join(" ")}".strip
 end
 
-define :end_diary do
-    client.puts "SUCCESS"
+define :end do
+    client.puts "Halted."
     halt
-end
-
-define :diary do
-    version = tail[0].split('=')[1]
-    client.puts version
 end

@@ -1,10 +1,11 @@
 class ConnectionContext
-    attr_reader :client, :verb, :tail
-
-    def initialize(client, verb, tail)
+    attr_reader   :client
+    attr_accessor :verb, :tail, :body, :action
+    
+    def initialize(client, body, action = 'ENTRY')
         @client = client
-        @verb   = verb
-        @tail   = tail
+        @body   = body
+        @action = action
     end
 
     def halt

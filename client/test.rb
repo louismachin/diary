@@ -10,10 +10,14 @@ def send_diary_packet(uri_string, data = {})
     port = File.read(port_path) || 1734
 
     packet =  "PING\n"
-    packet << "DIARY V=1\n"
+    packet << "DIARY A=FOO\n"
     packet << "ECHO THIS IS A TEST\n"
-    packet << "FOOBAR\n"
-    packet << "END_DIARY\n"
+#   packet << "END\n"
+#   packet << "FOOBAR\n"
+    packet << "\n"
+    packet << "Foo\n"
+    packet << "Bar\n"
+    packet << "Baz\n"
 
     puts "Connecting to custom protocol layer at #{host}:#{port}..."
 
